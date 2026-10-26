@@ -32,7 +32,9 @@ def test_files_upload(files_page: Page):
 
     file_list_locator = page.locator('#file-list')
     file_preview_locator = file_list_locator.locator('.result')
+    result_info_locator = page.get_by_test_id('result')
     expect(file_preview_locator).to_have_count(2)
+    expect(result_info_locator).to_have_text('2 file(s) selected')
 
     for file_name in files_to_upload.keys():
         with open(files_to_upload[file_name]) as f:
@@ -41,15 +43,16 @@ def test_files_upload(files_page: Page):
         file_preview = file_preview_locator.filter(has=page.get_by_text(file_name, exact=True))
         expect(file_preview.locator('pre')).to_have_text(file_content)
 
-    file_chooser.set_files([])
+    page.locator('#upload').set_input_files([])
     expect(file_preview_locator).to_have_count(0)
+    expect(result_info_locator).to_have_text('0 file(s) selected')
 
 def test_download_report(files_page: Page, tmp_path):
     expected_result = [
-        'id name status',
-        '1 Olivia Martin Active',
-        '2 Liam Chen Active',
-        '3 Emma Wilson Inactive',
+        ['id', 'name', 'status'],
+        ['1', 'Olivia Martin', 'Active'],
+        ['2', 'Liam Chen', 'Active'],
+        ['3', 'Emma Wilson', 'Inactive'],
     ]
 
     page = files_page
@@ -61,9 +64,11 @@ def test_download_report(files_page: Page, tmp_path):
     download_file_name = download.suggested_filename
     download_file_path = tmp_path / download_file_name
 
+    assert download_file_name == 'practice-report.csv'
+
     download.save_as(download_file_path)
 
     with open(download_file_path) as csv_report:
         report_reader = csv.reader(csv_report)
-        for row_id, row in enumerate(report_reader):
-            assert ' '.join(row) == expected_result[row_id]
+
+        assert list(report_reader) == expected_result
