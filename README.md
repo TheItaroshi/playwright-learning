@@ -1,6 +1,6 @@
 # Playwright Lab
 
-A local website to practice browser automation, from basic form controls to a complete checkout. **You write the tests.** Exercise briefs and expected outcomes are included; automation solutions are not.
+A local website to practice browser automation, from basic form controls to a complete checkout. **You write the tests.** This learning repository also contains personal practice tests and separate worked references for comparison.
 
 ## Run
 
@@ -24,7 +24,7 @@ Use the Python server rather than opening the HTML file directly: the network an
 
 ## Python learning path
 
-Open **http://127.0.0.1:8000/guide.html** for Python/pytest setup, a recommended exercise order, and wider assignments covering fixtures, traces, cross-browser execution, API testing, isolation, clock control, parallel runs, and CI. Each exercise includes a **Python features to use** panel and detailed assignments with completion criteria below the playground. No test solutions are provided.
+Open **http://127.0.0.1:8000/guide.html** for Python/pytest setup, a recommended exercise order, and wider assignments covering fixtures, traces, cross-browser execution, API testing, isolation, clock control, parallel runs, and CI. Each exercise includes a **Python features to use** panel and detailed assignments with completion criteria below the playground. See [tests/README.md](tests/README.md) for existing practice tests and worked references.
 
 Start with C1 (save a complete profile), then C2 (validation). Use the synchronous Python API consistently. The website needs no dependencies; your test environment needs pytest-playwright and its browser binaries as explained in the guide.
 
@@ -97,6 +97,12 @@ Commit source files, documentation, and your tests. The `.gitignore` excludes th
 - `playground/server.py` — standard-library HTTP server and API.
 - `playground/dist/` — editable HTML, CSS, JavaScript, frame, popup, and report fixture. No compilation needed; edit and refresh.
 - `playground/fixtures/` — files for upload exercises.
+- [tests/test_controls.py](tests/test_controls.py) — profile submission and form validation practice.
+- [tests/test_locators.py](tests/test_locators.py) — scoped locators and disclosure behavior.
+- [tests/test_timing.py](tests/test_timing.py) — auto-waiting and controlled browser-clock practice.
+- [tests/test_tables.py](tests/test_tables.py) — filtering, sorting, pagination, account changes, and cancellation.
+- [tests/controls_pro_reference.py](tests/controls_pro_reference.py) and [tests/tables_pro_reference.py](tests/tables_pro_reference.py) — worked examples, excluded from automatic pytest collection; explicit run commands are in [tests/README.md](tests/README.md).
+- [LEARNING_CONTEXT.md](LEARNING_CONTEXT.md) — learning preferences and handoff context.
 
 Put your automation wherever you prefer in this workspace. The learning material now targets Python with pytest and the synchronous Playwright API; you implement and organize the test suite.
 
