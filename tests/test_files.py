@@ -38,3 +38,6 @@ def test_files_upload(files_page: Page):
 
         file_preview = file_preview_locator.filter(has=page.get_by_text(file_name, exact=True))
         expect(file_preview.locator('pre')).to_have_text(file_content)
+
+    file_chooser.set_files([])
+    expect(file_preview_locator).to_have_count(0)
