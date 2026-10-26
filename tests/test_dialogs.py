@@ -66,3 +66,37 @@ def test_prompt_dialog_dismiss(dialogs_page: Page):
     prompt_button_locator.click()
 
     expect(result_locator).to_contain_text('Prompt cancelled')
+
+def test_create_project(dialogs_page: Page):
+    page = dialogs_page
+    project_button_locator = page.locator('#open-modal')
+    result_locator = page.get_by_test_id('result')
+    project_dialog_locator = page.get_by_role('dialog', name='Create project')
+    project_input = project_dialog_locator.get_by_role('textbox')
+    project_save_locator = project_dialog_locator.get_by_role('button', name='Save project')
+    project_name = 'Test_project_name'
+
+    expect(project_button_locator).to_be_visible()
+    project_button_locator.click()
+
+    expect(project_dialog_locator).to_be_visible()
+    project_input.fill(project_name)
+    project_save_locator.click()
+
+    expect(result_locator).to_contain_text(f'Project created: {project_name}')
+
+def test_cancel_project(dialogs_page: Page):
+    page = dialogs_page
+    project_button_locator = page.locator('#open-modal')
+    result_locator = page.get_by_test_id('result')
+    project_dialog_locator = page.get_by_role('dialog', name='Create project')
+    project_cancel_locator = project_dialog_locator.get_by_role('button', name='Cancel')
+
+    expect(project_button_locator).to_be_visible()
+    project_button_locator.click()
+
+    expect(project_dialog_locator).to_be_visible()
+    project_cancel_locator.click()
+
+    expect(project_dialog_locator).to_be_hidden()
+    expect(result_locator).to_be_hidden()
