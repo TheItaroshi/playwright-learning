@@ -1,5 +1,7 @@
 import pytest
-import pathlib
+import csv
+
+from pathlib import Path
 
 from playwright.sync_api import Page, expect
 
@@ -10,7 +12,7 @@ def files_page(page: Page, base_url: str | None) -> Page:
     return page
 
 def get_fixtures_dir():
-    fixtures_dir = pathlib.Path(__file__).resolve().parent.parent / 'playground' / 'fixtures'
+    fixtures_dir = Path(__file__).resolve().parent.parent / 'playground' / 'fixtures'
     return fixtures_dir
 
 
@@ -41,3 +43,27 @@ def test_files_upload(files_page: Page):
 
     file_chooser.set_files([])
     expect(file_preview_locator).to_have_count(0)
+
+def test_download_report(files_page: Page, tmp_path):
+    expected_result = [
+        'id name status',
+        '1 Olivia Martin Active',
+        '2 Liam Chen Active',
+        '3 Emma Wilson Inactive',
+    ]
+
+    page = files_page
+
+    with page.expect_download() as download_info:
+        page.get_by_text("Download report").click()
+
+    download = download_info.value
+    download_file_name = download.suggested_filename
+    download_file_path = tmp_path / download_file_name
+
+    download.save_as(download_file_path)
+
+    with open(download_file_path) as csv_report:
+        report_reader = csv.reader(csv_report)
+        for row_id, row in enumerate(report_reader):
+            assert ' '.join(row) == expected_result[row_id]
