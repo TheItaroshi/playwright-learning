@@ -52,3 +52,14 @@ def test_article_select(board_page: Page):
     expect(tasks_in_progress).to_have_count(0)
     expect(tasks_done).to_have_count(in_progress_num)
 
+def test_keyboard_save(board_page: Page):
+    page = board_page
+    session_note = 'Practice resilient locators'
+
+    session_note_locator = page.locator('#note')
+    session_note_locator.fill(session_note)
+
+    session_note_locator.press('Control+Enter')
+
+    result_locator = page.get_by_test_id('result')
+    expect(result_locator).to_have_text(f'Note saved: {session_note}')
