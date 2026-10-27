@@ -16,7 +16,7 @@ def test_iframe(boundaries_page: Page):
     page = boundaries_page
     result_locator = page.get_by_test_id('result')
 
-    verification_frame_locator = page.frame_locator()
+    verification_frame_locator = page.frame_locator('iframe[title="Verification widget"]')
     code_textbox_locator = verification_frame_locator.get_by_role('textbox')
     verification_button_locator = verification_frame_locator.get_by_role('button', name='Verify')
 
@@ -26,7 +26,6 @@ def test_iframe(boundaries_page: Page):
     status_locator = verification_frame_locator.locator('#status')
     expect(status_locator).to_have_text('Invalid code')
 
-    code_textbox_locator.clear()
     code_textbox_locator.fill(expected_input)
     verification_button_locator.click()
 
