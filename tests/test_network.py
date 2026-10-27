@@ -8,21 +8,13 @@ def network_page(page: Page, base_url: str | None) -> Page:
     page.goto(f"{origin}/index.html#network")
     return page
 
-def expect_200(page: Page, response_trigger: Locator):
+def expect_response(page: Page, response_trigger: Locator, status: int):
     with (page.expect_response(lambda response: '/api/products?' in response.url
                                                 and response.request.method == "GET" ) as response_info):
         response_trigger.click()
     response = response_info.value
-    assert response.status == 200
-    return response.ok
+    assert response.status == status
 
-def expect_503(page: Page, response_trigger: Locator):
-    with (page.expect_response(lambda response: '/api/products?' in response.url
-                                                and response.request.method == "GET" ) as response_info):
-        response_trigger.click()
-    response = response_info.value
-    assert response.status == 503
-    return response.ok
 
 def handler_empty_list(route):
     route.fulfill(json={"products": []})
@@ -55,30 +47,34 @@ def test_response_200(network_page: Page):
 
     expect(products_locator).to_have_count(0)
 
-    expect_200(page, load_product_button_locator)
+    expect_response(page, load_product_button_locator, status=200)
 
     expect(products_locator).to_have_count(4)
 
     product_search_locator.fill('hub')
-    expect_200(page, load_product_button_locator)
+    expect_response(page, load_product_button_locator, status=200)
 
     expect(products_locator).to_have_count(1)
+    expect(products_list_locator).to_contain_text('USB-C hub')
 
 def test_response_503(network_page: Page):
     page = network_page
 
     force_503_locator = page.get_by_label('Force HTTP 503')
     load_product_button_locator = page.get_by_role('button', name='Load products')
+    products_list_locator = page.locator('#products')
+    products_locator = products_list_locator.locator('article')
     result_locator = page.get_by_test_id('result')
 
     force_503_locator.check()
-    expect_503(page, load_product_button_locator)
+    expect_response(page, load_product_button_locator, status=503)
 
     expect(result_locator).to_have_text('HTTP 503: Warehouse temporarily unavailable')
 
     force_503_locator.uncheck()
-    expect_200(page, load_product_button_locator)
+    expect_response(page, load_product_button_locator, status=200)
 
+    expect(products_locator).to_have_count(4)
     expect(result_locator).to_have_text('4 products loaded')
 
 def test_empty_list_mock(network_page: Page):
@@ -89,7 +85,7 @@ def test_empty_list_mock(network_page: Page):
     products_locator = products_list_locator.locator('article')
     result_locator = page.get_by_test_id('result')
 
-    expect_200(page, load_product_button_locator)
+    expect_response(page, load_product_button_locator, status=200)
     expect(products_locator).to_have_count(0)
     expect(result_locator).to_have_text('No products found')
 
@@ -101,7 +97,7 @@ def test_synthetic_list_mock(network_page: Page):
     products_locator = products_list_locator.locator('article')
     result_locator = page.get_by_test_id('result')
 
-    expect_200(page, load_product_button_locator)
+    expect_response(page, load_product_button_locator, status=200)
     expect(products_locator).to_have_count(2)
     expect(products_list_locator).to_contain_text('Test product 1')
     expect(products_list_locator).to_contain_text('Test product 2')
