@@ -32,3 +32,20 @@ def test_iframe(boundaries_page: Page):
 
     expect(status_locator).to_have_text('Verification complete')
     expect(result_locator).to_have_text('Parent received: verification complete')
+
+def test_email_notification(boundaries_page: Page):
+    page = boundaries_page
+    notification_locator = page.locator('lab-notifications')
+    notification_switch_locator = notification_locator.get_by_role('switch', name='Email notifications')
+    notification_status_locator = notification_locator.get_by_role('status')
+
+    expect(notification_switch_locator).to_have_attribute('aria-checked', 'false')
+    expect(notification_status_locator).to_have_text('Notifications off')
+
+    notification_switch_locator.click()
+    expect(notification_switch_locator).to_have_attribute('aria-checked', 'true')
+    expect(notification_status_locator).to_have_text('Notifications on')
+
+    notification_switch_locator.click()
+    expect(notification_switch_locator).to_have_attribute('aria-checked', 'false')
+    expect(notification_status_locator).to_have_text('Notifications off')
