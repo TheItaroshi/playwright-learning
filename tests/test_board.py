@@ -27,3 +27,28 @@ def test_drag(board_page: Page):
     expect(tasks_in_todo).to_have_count(1)
     expect(tasks_in_progress).to_have_count(2)
 
+def test_article_select(board_page: Page):
+    page = board_page
+    board_locator = page.locator('.board')
+    todo_section_locator = board_locator.get_by_label('To do')
+    progress_section_locator = board_locator.get_by_label('In progress')
+    done_section_locator = board_locator.get_by_label('Done')
+
+    tasks_todo = todo_section_locator.get_by_role('article')
+    tasks_in_progress = progress_section_locator.get_by_role('article')
+    tasks_done = done_section_locator.get_by_role('article')
+
+    tasks_todo.first.locator('select').select_option('In progress')
+
+    in_progress_num = tasks_in_progress.count()
+    expect(tasks_done).to_have_count(0)
+
+    print(tasks_in_progress.count())
+
+    for _ in range(in_progress_num):
+        task_selection_field = tasks_in_progress.first.locator('select')
+        task_selection_field.select_option('Done')
+
+    expect(tasks_in_progress).to_have_count(0)
+    expect(tasks_done).to_have_count(in_progress_num)
+
