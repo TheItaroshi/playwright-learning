@@ -1,6 +1,6 @@
 import pytest
 
-from playwright.sync_api import Page, expect, Locator
+from playwright.sync_api import Page, expect, Locator, Playwright
 
 @pytest.fixture
 def network_page(page: Page, base_url: str | None) -> Page:
@@ -112,3 +112,22 @@ def test_abort_mock(network_page: Page):
     load_product_button_locator.click()
 
     expect(result_locator).to_have_text('Failed to fetch')
+
+def test_api_request_success(playwright: Playwright):
+    api = playwright.request.new_context()
+    response = api.get('http://127.0.0.1:8000/api/products', params={'q': 'hub'})
+    assert response.status == 200
+
+    response_data = response.json()
+
+    assert len(response_data['products']) == 1
+    assert response_data['products'][0]['id'] == 'P103'
+
+    api.dispose()
+
+def test_api_request_error(playwright: Playwright):
+    api = playwright.request.new_context()
+    response = api.get('http://127.0.0.1:8000/api/products', params={'fail': 1})
+    assert response.status == 503
+
+    api.dispose()
