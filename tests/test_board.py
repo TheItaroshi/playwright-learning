@@ -26,6 +26,9 @@ def test_drag(board_page: Page):
 
     expect(tasks_in_todo).to_have_count(1)
     expect(tasks_in_progress).to_have_count(2)
+    expect(progress_section_locator.get_by_text('Write first test', exact=True)).to_be_visible()
+    expect(progress_section_locator.get_by_text('Explore assertions', exact=True)).to_be_visible()
+    expect(todo_section_locator.get_by_text('Review locators', exact=True)).to_be_visible()
 
 def test_article_select(board_page: Page):
     page = board_page
@@ -43,14 +46,14 @@ def test_article_select(board_page: Page):
     in_progress_num = tasks_in_progress.count()
     expect(tasks_done).to_have_count(0)
 
-    print(tasks_in_progress.count())
-
     for _ in range(in_progress_num):
         task_selection_field = tasks_in_progress.first.locator('select')
         task_selection_field.select_option('Done')
 
     expect(tasks_in_progress).to_have_count(0)
     expect(tasks_done).to_have_count(in_progress_num)
+    expect(done_section_locator.get_by_text('Write first test', exact=True)).to_be_visible()
+    expect(done_section_locator.get_by_text('Explore assertions', exact=True)).to_be_visible()
 
 def test_keyboard_save(board_page: Page):
     page = board_page
@@ -59,7 +62,7 @@ def test_keyboard_save(board_page: Page):
     session_note_locator = page.locator('#note')
     session_note_locator.fill(session_note)
 
-    session_note_locator.press('Control+Enter')
+    session_note_locator.press('ControlOrMeta+Enter')
 
     result_locator = page.get_by_test_id('result')
     expect(result_locator).to_have_text(f'Note saved: {session_note}')
