@@ -36,3 +36,9 @@ Run all practice tests from the project root with `.venv/bin/python -m pytest te
 - `test_tables.py` contains practice tests.
 - `tables_pro_reference.py` covers sorting across pages, changing only one account, cancellation, and empty-search recovery. It uses a navigation fixture and small helpers; its page collector expects this exercise's full four-row pages.
 - Run the reference explicitly with `.venv/bin/python -m pytest tests/tables_pro_reference.py -v --headed` while the playground server is running. It is excluded from automatic collection.
+
+## Network
+
+- [test_network.py](test_network.py) contains practice tests for N1–N4: real responses, error recovery, mocked and aborted requests, and API-only checks.
+- [network_pro_reference.py](network_pro_reference.py) is the worked reference. It matches request paths and query parameters, checks response data and rendered products, and demonstrates retrying after removing an abort route. Its API fixture cleans up even when an assertion fails; API-only tests do not launch a browser.
+- Run it explicitly with `.venv/bin/python -m pytest tests/network_pro_reference.py -v` while the playground server is running. It is excluded from automatic collection. Add `--base-url http://127.0.0.1:8001` if using another server port.

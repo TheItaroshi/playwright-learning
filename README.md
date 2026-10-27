@@ -102,6 +102,7 @@ Commit source files, documentation, and your tests. The `.gitignore` excludes th
 - [tests/test_timing.py](tests/test_timing.py) — auto-waiting and controlled browser-clock practice.
 - [tests/test_tables.py](tests/test_tables.py) — filtering, sorting, pagination, account changes, and cancellation.
 - [tests/controls_pro_reference.py](tests/controls_pro_reference.py) and [tests/tables_pro_reference.py](tests/tables_pro_reference.py) — worked examples, excluded from automatic pytest collection; explicit run commands are in [tests/README.md](tests/README.md).
+- [tests/test_network.py](tests/test_network.py) and [tests/network_pro_reference.py](tests/network_pro_reference.py) — network practice and a worked N1–N4 reference covering response observation, mocking, abort/retry, and API-only requests. The reference is excluded from automatic collection; its run command is in [tests/README.md](tests/README.md).
 - [LEARNING_CONTEXT.md](LEARNING_CONTEXT.md) — learning preferences and handoff context.
 
 Put your automation wherever you prefer in this workspace. The learning material now targets Python with pytest and the synchronous Playwright API; you implement and organize the test suite.
