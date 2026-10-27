@@ -24,6 +24,27 @@ def expect_503(page: Page, response_trigger: Locator):
     assert response.status == 503
     return response.ok
 
+def handler_empty_list(route):
+    route.fulfill(json={"products": []})
+
+def handler_synthetic_products(route):
+    route.fulfill(json={"products": [
+        {
+            "id": "T1",
+            "name": "Test product 1",
+            "price": 10,
+            "stock": 10
+        },
+        {
+            "id": "T2",
+            "name": "Test product 2",
+            "price": 99.9,
+            "stock": 12
+        }
+    ]})
+def handler_abort(route):
+    route.abort()
+
 def test_response_200(network_page: Page):
     page = network_page
 
@@ -59,3 +80,39 @@ def test_response_503(network_page: Page):
     expect_200(page, load_product_button_locator)
 
     expect(result_locator).to_have_text('4 products loaded')
+
+def test_empty_list_mock(network_page: Page):
+    page = network_page
+    page.route("**/api/products?*", handler_empty_list)
+    load_product_button_locator = page.get_by_role('button', name='Load products')
+    products_list_locator = page.locator('#products')
+    products_locator = products_list_locator.locator('article')
+    result_locator = page.get_by_test_id('result')
+
+    expect_200(page, load_product_button_locator)
+    expect(products_locator).to_have_count(0)
+    expect(result_locator).to_have_text('No products found')
+
+def test_synthetic_list_mock(network_page: Page):
+    page = network_page
+    page.route("**/api/products?*", handler_synthetic_products)
+    load_product_button_locator = page.get_by_role('button', name='Load products')
+    products_list_locator = page.locator('#products')
+    products_locator = products_list_locator.locator('article')
+    result_locator = page.get_by_test_id('result')
+
+    expect_200(page, load_product_button_locator)
+    expect(products_locator).to_have_count(2)
+    expect(products_list_locator).to_contain_text('Test product 1')
+    expect(products_list_locator).to_contain_text('Test product 2')
+    expect(result_locator).to_have_text('2 products loaded')
+
+def test_abort_mock(network_page: Page):
+    page = network_page
+    page.route("**/api/products?*", handler_abort)
+    load_product_button_locator = page.get_by_role('button', name='Load products')
+    result_locator = page.get_by_test_id('result')
+
+    load_product_button_locator.click()
+
+    expect(result_locator).to_have_text('Failed to fetch')
