@@ -132,3 +132,21 @@ def test_load_context(storage_page: Page, browser: Browser, tmp_path):
     finally:
         context_c.close()
 
+def test_incorrect_password(storage_page: Page):
+    email = 'learner@example.com'
+    password = 'wrong_password'
+
+    page = storage_page
+    email_textbox_locator = page.get_by_label('Email')
+    password_textbox_locator = page.get_by_label('Password')
+    sign_in_button_locator = page.get_by_role('button', name='Sign in')
+    result_locator = page.get_by_test_id('result')
+
+    email_textbox_locator.fill(email)
+    password_textbox_locator.fill(password)
+    sign_in_button_locator.click()
+
+    expect(email_textbox_locator).to_be_visible()
+    expect(password_textbox_locator).to_be_visible()
+    expect(sign_in_button_locator).to_be_visible()
+    expect(result_locator).to_have_text('Incorrect email or password')
