@@ -1,6 +1,6 @@
 import pytest
 
-from playwright.sync_api import Page, expect, Locator, Playwright
+from playwright.sync_api import Page, expect, Browser
 
 @pytest.fixture
 def storage_page(page: Page, base_url: str | None) -> Page:
@@ -37,3 +37,49 @@ def test_session_lifetime(storage_page: Page):
     expect(email_textbox_locator).to_be_visible()
     expect(password_textbox_locator).to_be_visible()
     expect(sign_in_button_locator).to_be_visible()
+
+def test_separate_context(storage_page: Page, browser: Browser):
+    email = 'learner@example.com'
+    password = 'practice123'
+
+    page = storage_page
+    email_textbox_locator = page.get_by_label('Email')
+    password_textbox_locator = page.get_by_label('Password')
+    account_theme_locator = page.get_by_label('Saved accent preference')
+    sign_in_button_locator = page.get_by_role('button', name='Sign in')
+
+    email_textbox_locator.fill(email)
+    password_textbox_locator.fill(password)
+    sign_in_button_locator.click()
+
+    result_locator = page.locator('.result').first
+    expect(result_locator).to_contain_text(f'Signed in as {email}')
+    expect(email_textbox_locator).to_be_hidden()
+    expect(password_textbox_locator).to_be_hidden()
+    expect(sign_in_button_locator).to_be_hidden()
+
+    sign_out_button_locator = page.get_by_role('button', name='Sign out')
+    account_theme_locator.select_option('Ocean')
+
+    context_b = browser.new_context()
+    try:
+        page_b = context_b.new_page()
+        page_b.goto(storage_page.url)
+
+        page_b_email_textbox_locator = page_b.get_by_label('Email')
+        page_b_password_textbox_locator = page_b.get_by_label('Password')
+        page_b_account_theme_locator = page_b.get_by_label('Saved accent preference')
+        page_b_sign_in_button_locator = page_b.get_by_role('button', name='Sign in')
+
+        expect(page_b_email_textbox_locator).to_be_visible()
+        expect(page_b_password_textbox_locator).to_be_visible()
+        expect(page_b_account_theme_locator).to_be_visible()
+        expect(page_b_sign_in_button_locator).to_be_visible()
+
+        expect(page_b_account_theme_locator).to_have_value('Sage')
+        expect(account_theme_locator).to_have_value('Ocean')
+    finally:
+        context_b.close()
+
+    expect(result_locator).to_contain_text(f'Signed in as {email}')
+    expect(sign_out_button_locator).to_be_visible()
