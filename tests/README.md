@@ -42,3 +42,9 @@ Run all practice tests from the project root with `.venv/bin/python -m pytest te
 - [test_network.py](test_network.py) contains practice tests for N1–N4: real responses, error recovery, mocked and aborted requests, and API-only checks.
 - [network_pro_reference.py](network_pro_reference.py) is the worked reference. It matches request paths and query parameters, checks response data and rendered products, and demonstrates retrying after removing an abort route. Its API fixture cleans up even when an assertion fails; API-only tests do not launch a browser.
 - Run it explicitly with `.venv/bin/python -m pytest tests/network_pro_reference.py -v` while the playground server is running. It is excluded from automatic collection. Add `--base-url http://127.0.0.1:8001` if using another server port.
+
+## Storage
+
+- [test_storage.py](test_storage.py) contains practice tests for S1–S4: session lifetime, independent contexts, saved state, and invalid login.
+- [storage_pro_reference.py](storage_pro_reference.py) is the worked reference, with small sign-in/assertion helpers and guaranteed cleanup for manually created contexts. It saves JSON under `tmp_path` and demonstrates why Ocean restores from localStorage while the sessionStorage login does not. Reload checks also verify that logout and invalid login leave no active session.
+- Run it explicitly with `.venv/bin/python -m pytest tests/storage_pro_reference.py -v` while the playground server is running. It is excluded from automatic collection. Add `--base-url http://127.0.0.1:8001` if using another server port.

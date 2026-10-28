@@ -104,6 +104,7 @@ Commit source files, documentation, and your tests. The `.gitignore` excludes th
 - [tests/controls_pro_reference.py](tests/controls_pro_reference.py) and [tests/tables_pro_reference.py](tests/tables_pro_reference.py) — worked examples, excluded from automatic pytest collection; explicit run commands are in [tests/README.md](tests/README.md).
 - [tests/test_network.py](tests/test_network.py) and [tests/network_pro_reference.py](tests/network_pro_reference.py) — network practice and a worked N1–N4 reference covering response observation, mocking, abort/retry, and API-only requests. The reference is excluded from automatic collection; its run command is in [tests/README.md](tests/README.md).
 - [LEARNING_CONTEXT.md](LEARNING_CONTEXT.md) — learning preferences and handoff context.
+- [tests/test_storage.py](tests/test_storage.py) and [tests/storage_pro_reference.py](tests/storage_pro_reference.py) — storage practice and a worked S1–S4 reference covering session lifetime, context isolation, saved-state boundaries, and invalid login. The reference is excluded from automatic collection; its run command is in [tests/README.md](tests/README.md).
 
 Put your automation wherever you prefer in this workspace. The learning material now targets Python with pytest and the synchronous Playwright API; you implement and organize the test suite.
 
